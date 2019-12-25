@@ -44,7 +44,14 @@ public class IntroState implements GameState {
 
 		stage.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
-                gameStateManager.setState(new RoomMateState(gameStateManager));
+                final RoomMateState nextState = new RoomMateState(gameStateManager);
+                final Runnable newState = new Runnable() {
+					@Override
+					public void run() {
+                        nextState.renderListing();
+					}
+				};
+                gameStateManager.setState(new LoadingState(newState, gameStateManager, nextState));
 			}
 		});
 	}

@@ -73,7 +73,13 @@ public class RoomMateState implements GameState {
 
 		noLabel.addListener(new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
-				renderListing();
+				final Runnable newState = new Runnable() {
+					@Override
+					public void run() {
+						RoomMateState.this.renderListing();
+					}
+				};
+				gsm.setState(new LoadingState(newState, gsm, RoomMateState.this));
 			}
 		});
 
@@ -98,8 +104,6 @@ public class RoomMateState implements GameState {
 
 		listingGetter = new ListingGetter();
 		parser = new ListingParser();
-
-		renderListing();
 	}
 
 	@Override
@@ -113,7 +117,7 @@ public class RoomMateState implements GameState {
 		stage.dispose();
 	}
 
-	private void renderListing() {
+	public void renderListing() {
 		url = listingGetter.randomListing();
 		Listing listing = parser.parseListing(url);
 		nameLabel.setText("Why not rent from: " + listing.getName() + " for " + listing.getPrice() + "?");
